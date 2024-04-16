@@ -1,0 +1,22 @@
+# Reference: https://prometheus.io/docs/guides/cadvisor/
+version: '3.2'
+
+services:
+  prometheus:
+    image: prom/prometheus:latest
+    container_name: prometheus
+    ports:
+      - 9090:9090
+    command:
+      - --config.file=/etc/prometheus/prometheus.yml
+    volumes:
+      - ./prometheus.yml:/etc/prometheus/prometheus.yml:ro
+
+  # https://grafana.com/docs/grafana/latest/setup-grafana/configure-docker/
+  grafana:
+    image: grafana/grafana
+    container_name: grafana
+    ports:
+      - "3000:3000"
+    depends_on:
+      - prometheus
