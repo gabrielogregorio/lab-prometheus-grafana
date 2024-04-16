@@ -11,6 +11,8 @@ services:
       - --config.file=/etc/prometheus/prometheus.yml
     volumes:
       - ./prometheus.yml:/etc/prometheus/prometheus.yml:ro
+    depends_on:
+    - cadvisor
 
   # https://grafana.com/docs/grafana/latest/setup-grafana/configure-docker/
   grafana:
@@ -20,3 +22,25 @@ services:
       - "3000:3000"
     depends_on:
       - prometheus
+
+  # https://prometheus.io/docs/guides/cadvisor/
+  cadvisor:
+    image: gcr.io/cadvisor/cadvisor:latest
+    container_name: cadvisor
+    ports:
+    - 8080:8080
+    volumes:
+    - /:/rootfs:ro
+    - /var/run:/var/run:rw
+    - /sys:/sys:ro
+    # Ta pegando os dados locais do docker
+    - /var/lib/docker/:/var/lib/docker:ro
+    depends_on:
+    - redis
+
+  # É só para testes do cadvisor
+  redis:
+    image: redis:latest
+    container_name: redis
+    ports:
+    - 6379:6379

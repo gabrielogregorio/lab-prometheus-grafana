@@ -13,5 +13,13 @@ rule_files:
 scrape_configs:
   # self monitoring
   - job_name: 'prometheus'
+    scrape_interval: 5s
     static_configs:
       - targets: ['localhost:9090']
+
+  # docker monitoring
+  - job_name: cadvisor
+    scrape_interval: 5s
+    static_configs:
+    - targets:
+      - cadvisor:8080
