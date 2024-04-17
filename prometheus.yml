@@ -1,6 +1,6 @@
 # Reference: https://github.com/prometheus/prometheus/blob/main/documentation/examples/prometheus.yml
 global:
-  scrape_interval:     15s
+  scrape_interval: 15s
   evaluation_interval: 15s
 
 alerting:
@@ -12,14 +12,21 @@ rule_files:
 
 scrape_configs:
   # self monitoring
-  - job_name: 'prometheus'
+  - job_name: "prometheus"
     scrape_interval: 5s
     static_configs:
-      - targets: ['localhost:9090']
+      - targets: ["localhost:9090"]
 
   # docker monitoring
   - job_name: cadvisor
     scrape_interval: 5s
     static_configs:
-    - targets:
-      - cadvisor:8080
+      - targets:
+          - cadvisor:8080
+
+  # app example
+  - job_name: app
+    scrape_interval: 1s
+    static_configs:
+      - targets:
+          - app:3333

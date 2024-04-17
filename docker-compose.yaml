@@ -1,5 +1,5 @@
 # Reference: https://prometheus.io/docs/guides/cadvisor/
-version: '3.2'
+version: "3.2"
 
 services:
   prometheus:
@@ -12,7 +12,8 @@ services:
     volumes:
       - ./prometheus.yml:/etc/prometheus/prometheus.yml:ro
     depends_on:
-    - cadvisor
+      - cadvisor
+      - app
 
   # https://grafana.com/docs/grafana/latest/setup-grafana/configure-docker/
   grafana:
@@ -28,19 +29,30 @@ services:
     image: gcr.io/cadvisor/cadvisor:latest
     container_name: cadvisor
     ports:
-    - 8080:8080
+      - 8080:8080
     volumes:
-    - /:/rootfs:ro
-    - /var/run:/var/run:rw
-    - /sys:/sys:ro
-    # Ta pegando os dados locais do docker
-    - /var/lib/docker/:/var/lib/docker:ro
+      - /:/rootfs:ro
+      - /var/run:/var/run:rw
+      - /sys:/sys:ro
+      # Ta pegando os dados locais do docker
+      - /var/lib/docker/:/var/lib/docker:ro
     depends_on:
-    - redis
+      - redis
 
   # É só para testes do cadvisor
   redis:
     image: redis:latest
     container_name: redis
     ports:
-    - 6379:6379
+      - 6379:6379
+
+  app:
+    container_name: api
+    build:
+      context: ./app
+    volumes:
+      - ./app:/usr/src/app/
+    ports:
+      - 3333:3333
+    environment:
+      - CHOKIDAR_USEPOLLING=true
